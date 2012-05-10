@@ -1,12 +1,12 @@
 {
-  "author": "Johan Hillerstr�m <progr@mmer.nu> (https://github.com/phete)",
+  "author": "Johan Hillerström <progr@mmer.nu> (https://github.com/hillerstorm)",
   "name": "gaddag.js",
   "description": "A package for constructing a GADDAG, a specialized version of a DAWG commonly used in Scrabble-like wordfinding scenarios",
   "version": "0.0.0",
-  "homepage": "https://github.com/phete/gaddag.js",
+  "homepage": "https://github.com/hillerstorm/gaddag.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/phete/gaddag.js.git"
+    "url": "https://github.com/hillerstorm/gaddag.js.git"
   },
   "main": "gaddag",
   "dependencies": {},

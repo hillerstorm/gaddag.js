@@ -1,16 +1,17 @@
 /*!
  * gaddag.js
- * Copyright(c) 2012 phete <progr@mmer.nu>
+ * Copyright(c) 2012 hillerstorm <progr@mmer.nu>
  */
+var fs = require('fs');
 
-module.exports.Gaddag = function () {
+module.exports = function () {
     var nextId = 0,
         previousWord = '',
         root = { id: nextId++, edges: {}, $: 0 },
         uncheckedNodes = [],
         minimizedNodes = {};
 
-    function str(node) {
+    function str (node) {
         var s, label;
         if (node.$) {
             s = '1';
@@ -19,15 +20,18 @@ module.exports.Gaddag = function () {
         }
 
         for (label in node.edges) {
-            s += '_' + label + '_' + node.edges[label].id;
+            if (node.edges.hasOwnProperty(label)) {
+                s += '_' + label + '_' + node.edges[label].id;
+            }
         }
 
         return s;
     }
 
-    function minimize(downTo) {
+    function minimize (downTo) {
         var i, tuple,
             childKey, node;
+
         for (i = uncheckedNodes.length-1; i > downTo-1; i--) {
             tuple = uncheckedNodes.pop();
             childKey = str(tuple.child);
@@ -40,9 +44,10 @@ module.exports.Gaddag = function () {
         }
     }
 
-    function insert(word) {
+    function insert (word) {
         var commonPrefix = 0, i,
             node, slicedWord, nd, ltr;
+
         for (i = 0; i < Math.min(word.length, previousWord.length); i++) {
             if (word[i] !== previousWord[i]) {
                 break;
@@ -73,41 +78,80 @@ module.exports.Gaddag = function () {
         previousWord = word;
     }
 
-    function finish() {
+    function finish () {
         minimize(0);
         uncheckedNodes = [];
         minimizedNodes = {};
         previousWord = null;
     }
 
+    // Finds a word, returns 1 if the word was found, 0 otherwise
     this.find = function (word) {
         var node = root,
             i, letter;
+
         for (i = 0; i < word.length; i++) {
             letter = word[i].toUpperCase();
             if (!node.edges[letter]) {
-                return false;
+                return 0;
             }
             node = node.edges[letter];
         }
         return node.$;
     };
 
-    this.get = function (chr) {
-        return root.edges[chr.toUpperCase()];
+    // Returns the subtree matching the letter given
+    this.get = function (letter) {
+        return root.edges[letter.toUpperCase()];
     };
 
+    // Loads a newline-separated file from disk containing words to use
     this.load = function (dictionary, onCompleted) {
         process.nextTick(function () {
+            var words = {
+                // TODO: fix a better way of handling huge dictionaries.
+                // The only reason it's saved this way is because
+                // sorting one letter at a time is quicker...
+                a: [], b: [], c: [], d: [],
+                e: [], f: [], g: [], h: [],
+                i: [], j: [], k: [], l: [],
+                m: [], n: [], o: [], p: [],
+                q: [], r: [], s: [], t: [],
+                u: [], v: [], w: [], x: [],
+                y: [], z: [], å: [], ä: [], ö: []
+            }, letter;
+
             nextId = 0;
             previousWord = '';
             root = { id: nextId++, edges: {}, $: 0 };
             uncheckedNodes = [];
             minimizedNodes = {};
-            require('fs').readFileSync(dictionary)
+
+            fs.readFileSync(dictionary)
                 .toString()
-                .split('\r\n')
-                .forEach(insert);
+                .split('\n')
+                .forEach(function (word) {
+                    var i, idx;
+
+                    try {
+                        words[word[0]].push(word);
+                        word += '_';
+                        for (i = 2; i < word.length; i++) {
+                            idx = word.indexOf('_') + 1;
+                            word = word.slice(1, idx) + word[0] + word.slice(idx);
+                            words[word[0]].push(word);
+                        }
+                    } catch (error) {
+                        throw error;
+                    }
+                });
+
+            for (letter in words) {
+                if (words.hasOwnProperty(letter)) {
+                    words[letter].sort();
+                    words[letter].forEach(insert);
+                }
+            }
             finish();
             if (onCompleted) {
                 onCompleted();
