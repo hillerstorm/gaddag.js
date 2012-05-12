@@ -1,8 +1,8 @@
 {
   "author": "Johan Hillerström <progr@mmer.nu> (https://github.com/hillerstorm)",
-  "name": "gaddag.js",
+  "name": "gaddag",
   "description": "A package for constructing a GADDAG, a specialized version of a DAWG commonly used in Scrabble-like wordfinding scenarios",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "homepage": "https://github.com/hillerstorm/gaddag.js",
   "repository": {
     "type": "git",
