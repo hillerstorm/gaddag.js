@@ -4,29 +4,30 @@
  */
 var fs = require('fs');
 
+function str (node) {
+    var s, label;
+
+    if (node.$) {
+        s = '1';
+    } else {
+        s = '0';
+    }
+
+    for (label in node.edges) {
+        if (node.edges.hasOwnProperty(label)) {
+            s += '_' + label + '_' + node.edges[label].id;
+        }
+    }
+
+    return s;
+}
+
 module.exports = function () {
     var nextId = 0,
         previousWord = '',
         root = { id: nextId++, edges: {}, $: 0 },
         uncheckedNodes = [],
         minimizedNodes = {};
-
-    function str (node) {
-        var s, label;
-        if (node.$) {
-            s = '1';
-        } else {
-            s = '0';
-        }
-
-        for (label in node.edges) {
-            if (node.edges.hasOwnProperty(label)) {
-                s += '_' + label + '_' + node.edges[label].id;
-            }
-        }
-
-        return s;
-    }
 
     function minimize (downTo) {
         var i, tuple,
