@@ -130,20 +130,16 @@ module.exports = function () {
 
             fs.readFileSync(dictionary)
                 .toString()
-                .split('\n')
+                .split('\r\n')
                 .forEach(function (word) {
                     var i, idx;
 
-                    try {
+                    words[word[0]].push(word);
+                    word += '_';
+                    for (i = 2; i < word.length; i++) {
+                        idx = word.indexOf('_') + 1;
+                        word = word.slice(1, idx) + word[0] + word.slice(idx);
                         words[word[0]].push(word);
-                        word += '_';
-                        for (i = 2; i < word.length; i++) {
-                            idx = word.indexOf('_') + 1;
-                            word = word.slice(1, idx) + word[0] + word.slice(idx);
-                            words[word[0]].push(word);
-                        }
-                    } catch (error) {
-                        throw error;
                     }
                 });
 
