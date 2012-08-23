@@ -1,3 +1,4 @@
+[![build status](https://secure.travis-ci.org/hillerstorm/gaddag.js.png)](http://travis-ci.org/hillerstorm/gaddag.js)
 gaddag.js
 =========
 
