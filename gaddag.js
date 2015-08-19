@@ -1,7 +1,3 @@
-/*!
- * gaddag.js
- * Copyright(c) 2015 hillerstorm <progr@mmer.nu>
- */
 'use strict';
 
 import fs from 'fs';
